@@ -33,6 +33,7 @@ document.getElementById("save").addEventListener("click", async () => {
       const error = chrome.runtime.lastError;
       error ? reject(new Error(error.message)) : resolve();
     }));
+    document.getElementById("destination").textContent = `${settings.owner}/${settings.repo} · ${settings.branch}`;
     setStatus("Token saved. Ready to sync.", "success");
     settingsPanel.hidden = true;
   } catch (error) {

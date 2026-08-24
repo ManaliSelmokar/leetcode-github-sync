@@ -53,6 +53,9 @@ async function saveSubmission(submission) {
   if (!settings.token) {
     throw new Error("Add a GitHub token in the extension settings first.");
   }
+  if (!settings.owner || !settings.repo || !settings.branch) {
+    throw new Error("Configure the GitHub owner, repository, and branch in Settings.");
+  }
 
   if (!submission.code) {
     throw new Error("The accepted code could not be read from this LeetCode page.");
@@ -68,6 +71,23 @@ async function saveSubmission(submission) {
     "X-GitHub-Api-Version": "2022-11-28",
     "Content-Type": "application/json"
   };
+
+  const repositoryUrl = `https://api.github.com/repos/${encodeURIComponent(settings.owner)}/${encodeURIComponent(settings.repo)}`;
+  const repositoryResponse = await fetch(repositoryUrl, { headers });
+  if (!repositoryResponse.ok) {
+    if (repositoryResponse.status === 404) {
+      throw new Error(`GitHub: Repository not found or token has no access to ${settings.owner}/${settings.repo}.`);
+    }
+    throw await githubError(repositoryResponse);
+  }
+
+  const branchResponse = await fetch(`${repositoryUrl}/branches/${encodeURIComponent(settings.branch)}`, { headers });
+  if (!branchResponse.ok) {
+    if (branchResponse.status === 404) {
+      throw new Error(`GitHub: Branch "${settings.branch}" was not found in ${settings.owner}/${settings.repo}.`);
+    }
+    throw await githubError(branchResponse);
+  }
 
   const existingResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(settings.branch)}`, { headers });
   let sha;
