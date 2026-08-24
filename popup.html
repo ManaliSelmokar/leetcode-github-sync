@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeetCode GitHub Sync</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <header>
+      <div class="brand-mark"><span class="brand-dot"></span>LC<span>→</span>GH</div>
+      <button id="settingsToggle" class="icon-button" aria-label="Open settings" title="Settings">⚙</button>
+    </header>
+    <div class="eyebrow">WORKSPACE / SYNC CONTROL</div>
+    <h1>LeetCode <span>→ GitHub</span></h1>
+    <p class="destination" id="destination">Repository not configured</p>
+    <div class="status-row"><span class="status-dot"></span><p class="status" id="status">Ready to save your next accepted solution.</p></div>
+    <button id="syncCurrent" class="primary">Sync current solution</button>
+    <section class="activity-panel">
+      <div class="section-heading"><strong>Activity log</strong><span>LAST EVENT</span></div>
+      <p class="last-sync empty" id="lastSync">No sync activity yet.</p>
+    </section>
+    <section id="settingsPanel" hidden>
+      <div class="section-heading"><strong>Settings</strong><span>Repository connection</span></div>
+      <label>GitHub token<input id="token" type="password" autocomplete="off" placeholder="github_pat_..." required></label>
+      <label>Owner<input id="owner" type="text" placeholder="your-github-name"></label>
+      <label>Repository<input id="repo" type="text" placeholder="your-repository"></label>
+      <label>Branch<input id="branch" type="text" placeholder="main"></label>
+      <label>Folder<input id="basePath" type="text" placeholder="solutions"></label>
+      <button id="save">Save settings</button>
+      <p class="hint">Fine-grained token with Contents read/write access.</p>
+    </section>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
