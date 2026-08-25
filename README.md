@@ -4,7 +4,7 @@ LeetCode GitHub Sync is a Manifest V3 browser extension for saving accepted Leet
 
 ## Features
 
-- Detects accepted submissions on LeetCode problem pages.
+- Detects accepted submissions on LeetCode problem pages after a Submit action.
 - Reads the active solution and programming language from the editor.
 - Creates or updates one source file per problem.
 - Supports automatic sync and a manual **Sync accepted solution** action.
@@ -87,7 +87,7 @@ The extension also notifies you when capture, authentication, permissions, or Gi
 ## Limitations
 
 - LeetCode's editor and result markup can change, which may require updates to `content.js`.
-- The extension reads the currently visible editor; it does not import historical submissions.
+- The extension reads the currently visible editor after a fresh Submit and Accepted result; it does not import historical submissions or unsent editor contents.
 - GitHub API access requires an internet connection and a valid token with repository Contents write permission.
 - This is a local unpacked extension. Publishing it to a browser extension store requires separate packaging, review, and privacy documentation.
 

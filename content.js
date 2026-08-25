@@ -1,14 +1,32 @@
 let lastAcceptedText = "";
 let lastCode = "";
+let awaitingSubmissionResult = false;
+let acceptedCurrentSubmission = false;
+let acceptedBaseline = null;
+
+document.addEventListener("click", (event) => {
+  const submitButton = event.target.closest("button");
+  if (submitButton && /^submit$/i.test(submitButton.textContent.trim())) {
+    awaitingSubmissionResult = true;
+    acceptedCurrentSubmission = false;
+    acceptedBaseline = findAcceptedElement();
+  }
+}, true);
 
 const observer = new MutationObserver(() => {
-  const acceptedNode = findAcceptedNode();
-  const accepted = acceptedNode && acceptedNode !== lastAcceptedText;
+  if (!awaitingSubmissionResult) {
+    return;
+  }
+  const acceptedElement = findAcceptedElement();
+  const acceptedNode = acceptedElement?.textContent.trim() || "";
+  const accepted = acceptedElement && acceptedElement !== acceptedBaseline && acceptedNode !== lastAcceptedText;
   if (!accepted) {
     return;
   }
 
   lastAcceptedText = acceptedNode;
+  awaitingSubmissionResult = false;
+  acceptedCurrentSubmission = true;
   captureAndSend().catch(() => {
     // The extension can be reloaded while a submission is being captured.
   });
@@ -18,6 +36,10 @@ observer.observe(document.body, { childList: true, subtree: true, characterData:
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type !== "sync-current") {
+    return;
+  }
+  if (!acceptedCurrentSubmission) {
+    sendResponse({ ok: false, error: "Submit this solution and wait for Accepted before syncing." });
     return;
   }
   const code = readEditorCode();
@@ -67,9 +89,12 @@ function safeSendMessage(message) {
 }
 
 function findAcceptedNode() {
+  return findAcceptedElement()?.textContent.trim() || "";
+}
+
+function findAcceptedElement() {
   return [...document.querySelectorAll("body *")]
     .find((element) => element.children.length === 0 && /^accepted$/i.test(element.textContent.trim()))
-    ?.textContent.trim() || "";
 }
 
 function readTitle() {

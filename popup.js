@@ -49,35 +49,8 @@ document.getElementById("syncCurrent").addEventListener("click", async () => {
       throw new Error("Open a LeetCode problem first.");
     }
 
-    const [result] = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => {
-        const editor = document.querySelector('textarea[aria-label="Code editor"]');
-        const heading = document.querySelector("h1");
-        const accepted = [...document.querySelectorAll("body *")]
-          .some((element) => element.children.length === 0 && /^accepted$/i.test(element.textContent.trim()));
-        const languageButton = [...document.querySelectorAll("button")].find((button) => /^(C\+\+|Java|Python|Python3|JavaScript|TypeScript|Go|Rust|C#|Kotlin|Swift|Ruby|PHP)$/i.test(button.textContent.trim()));
-        return {
-          accepted,
-          title: heading?.textContent?.replace(/^\d+\.\s*/, "").trim() || location.pathname.split("/")[2],
-          language: languageButton?.textContent.trim() || "text",
-          code: editor?.value?.trim() || ""
-        };
-      }
-    });
-
-    if (!result.result.code) {
-      throw new Error("The code editor is empty or not available. Refresh LeetCode and try again.");
-    }
-    if (!result.result.accepted) {
-      throw new Error("This solution is not accepted yet. Submit it successfully before syncing.");
-    }
-
     setStatus("Uploading solution...", "working");
-    const response = await chrome.runtime.sendMessage({
-      type: "accepted-submission",
-      submission: { ...result.result, url: tab.url, accepted: true }
-    });
+    const response = await chrome.tabs.sendMessage(tab.id, { type: "sync-current" });
     if (!response?.ok) {
       throw new Error(response?.error || "The upload failed.");
     }
