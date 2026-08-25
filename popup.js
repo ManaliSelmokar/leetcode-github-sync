@@ -50,7 +50,7 @@ document.getElementById("syncCurrent").addEventListener("click", async () => {
     }
 
     setStatus("Uploading solution...", "working");
-    const response = await chrome.tabs.sendMessage(tab.id, { type: "sync-current" });
+    const response = await sendSyncRequest(tab.id);
     if (!response?.ok) {
       throw new Error(response?.error || "The upload failed.");
     }
@@ -59,6 +59,19 @@ document.getElementById("syncCurrent").addEventListener("click", async () => {
     setStatus(error.message, "error");
   }
 });
+
+async function sendSyncRequest(tabId) {
+  try {
+    return await chrome.tabs.sendMessage(tabId, { type: "sync-current" });
+  } catch (error) {
+    if (!/Receiving end does not exist|Could not establish connection/i.test(error.message)) {
+      throw error;
+    }
+
+    await chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] });
+    throw new Error("Extension connected. Refresh this LeetCode page, submit again, and wait for Accepted.");
+  }
+}
 
 function setStatus(message, state = "") {
   const status = document.getElementById("status");

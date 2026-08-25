@@ -93,7 +93,7 @@ The extension also notifies you when capture, authentication, permissions, or Gi
 
 ## Development
 
-No build step or third-party dependency is required. After changing extension files, reload the unpacked extension from the browser's extensions page and refresh open LeetCode tabs so they receive the new content script.
+No build step or third-party dependency is required. After changing extension files, reload the unpacked extension from the browser's extensions page and refresh open LeetCode tabs so they receive the new content script. If the popup reports that no receiving end exists, refresh the LeetCode page and submit the solution again.
 
 For debugging, inspect the extension service worker from the extensions page and inspect the LeetCode tab's console for content-script errors.
 
