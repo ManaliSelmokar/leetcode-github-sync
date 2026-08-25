@@ -7,7 +7,7 @@ LeetCode GitHub Sync is a Manifest V3 browser extension for saving accepted Leet
 - Detects accepted submissions on LeetCode problem pages.
 - Reads the active solution and programming language from the editor.
 - Creates or updates one source file per problem.
-- Supports automatic sync and a manual **Sync current solution** action.
+- Supports automatic sync and a manual **Sync accepted solution** action.
 - Sends desktop notifications for successful and failed syncs.
 - Stores configuration in the browser extension's local storage.
 
@@ -72,7 +72,7 @@ solutions/
     └── solution.cpp
 ```
 
-If the file already exists, the extension updates it using its GitHub file SHA. Each create or update operation produces a commit on the configured branch.
+If the file already exists, the extension updates it using its GitHub file SHA. Each create or update operation produces a commit on the configured branch. The service worker rejects submissions unless they are explicitly marked as accepted.
 
 ## Notifications
 

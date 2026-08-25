@@ -50,6 +50,7 @@ function sendSubmission(code) {
       title: readTitle(),
       language: readLanguage(),
       code,
+          accepted: true,
       url: window.location.href
     }
   });

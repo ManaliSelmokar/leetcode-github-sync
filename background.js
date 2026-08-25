@@ -60,6 +60,9 @@ async function saveSubmission(submission) {
   if (!submission.code) {
     throw new Error("The accepted code could not be read from this LeetCode page.");
   }
+  if (submission.accepted !== true) {
+    throw new Error("Only accepted LeetCode submissions can be synced.");
+  }
 
   const extension = languageExtension(submission.language);
   const slug = slugify(submission.title || "leetcode-solution");
